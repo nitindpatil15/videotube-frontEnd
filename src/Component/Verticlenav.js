@@ -20,19 +20,19 @@ const Verticlenav = () => {
               <p className="text-base text-center">Home</p>
             </div>
             <div className="my-2 hover:bg-slate-800 hover:rounded-lg p-[5px]">
-              <Link to="/" className="text-white p-8">
+              <Link to="/community" className="text-white p-8">
                 <span className="material-icons">note_alt</span>
               </Link>
               <p className="text-base text-center">Community</p>
             </div>
             <div className="my-2 hover:bg-slate-800 hover:rounded-lg p-[5px]">
-              <Link to="/" className="text-white p-8">
+              <Link to="/subscribed-channel" className="text-white p-8">
                 <span className="material-icons">subscriptions</span>
               </Link>
               <p className="text-base text-center">Subscription</p>
             </div>
             <div className="my-2 hover:bg-slate-800 hover:rounded-lg p-[5px]">
-              <Link to="/" className="text-white p-8">
+              <Link to="/user" className="text-white p-8">
                 <span className="material-icons">account_circle</span>
               </Link>
               <p className="text-base text-center">You</p>

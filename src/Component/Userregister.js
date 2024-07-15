@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "material-icons/iconfont/material-icons.css";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Userregister = () => {
   const navigate = useNavigate();
@@ -33,27 +34,22 @@ const Userregister = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append('fullName', credentials.fullName);
-      formData.append('username', credentials.username);
-      formData.append('email', credentials.email);
-      formData.append('password', credentials.password);
-      formData.append('avatar', profilePic); // Ensure field name is 'avatar'
-      formData.append('coverImage', coverImage); // Ensure field name is 'coverImage'
+      formData.append("fullName", credentials.fullName);
+      formData.append("username", credentials.username);
+      formData.append("email", credentials.email);
+      formData.append("password", credentials.password);
+      formData.append("avatar", profilePic); // Ensure field name is 'avatar'
+      formData.append("coverImage", coverImage); // Ensure field name is 'coverImage'
 
-      const register = await fetch('http://localhost:7500/api/v1/users/register', {
-        method: 'POST',
-        body: formData
-      });
+      const register = await axios.post("http://localhost:7500/api/v1/users/register", formData);
 
-      const registerData = await register.json();
-
-      if (registerData.success) {
-        navigate('/login');
+      if (register.data.success) {
+        navigate("/login");
       } else {
-        alert('Registration failed');
+        alert("Registration failed");
       }
     } catch (error) {
-      alert('Something went wrong');
+      alert("Something went wrong");
     }
   };
 
@@ -69,7 +65,7 @@ const Userregister = () => {
               <input
                 className="text-white mt-6 mx-2"
                 type="file"
-                name="avatar" // Ensure field name is 'avatar'
+                name="avatar"
                 id="profilePic"
                 onChange={handleProfilePicChange}
                 required
@@ -92,7 +88,7 @@ const Userregister = () => {
               <input
                 className="text-white mt-6 mx-2"
                 type="file"
-                name="coverImage" // Ensure field name is 'coverImage'
+                name="coverImage"
                 id="coverImage"
                 onChange={handleCoverImageChange}
                 required

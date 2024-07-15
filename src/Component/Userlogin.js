@@ -1,46 +1,39 @@
-import React ,{ useState } from "react";
+import React, { useState } from "react";
 import "material-icons/iconfont/material-icons.css";
-import { Link ,useNavigate,} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const Userlogin = () => {
-  const navigate = useNavigate();
-  const [credentials, setcredentials] = useState({username:"", email: "", password: "" });
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
 
-  const onchange = (e) => {
-    setcredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
-  
-  const handleonSubmit=async(e)=>{
-    e.preventDefault();
-    try {
-      const login = await fetch('http://localhost:7500/api/v1/users/login',{
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          username:credentials.username,
-          email: credentials.email,
-          password: credentials.password,
-        }),
-      })
-      const logindata = await login.json();
-      console.log(logindata.data.accessToken);
-      alert("Logged in Successfully!!!")
-      if (logindata.success) {
-        localStorage.setItem("token", logindata.data.accessToken);
-        navigate("/");
-      } else {
-        alert("Invalid Credentials")
-      }
-    } catch (error) {
-      throw error.message
-    }
-  }
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:7500/api/v1/users/login', {
+                email,
+                username,
+                password
+            });
+            const { accessToken } = response.data.data;
+            // Store the access token in a cookie
+            Cookies.set('accessToken', accessToken, { expires: 7 }); // Expires in 7 days
+            // Optionally redirect to another page or update the UI
+            console.log('Login successful');
+            navigate('/current-user')
+        } catch (err) {
+            setError(err.response ? err.response.data.message : err.message);
+        }
+    };
+
   return (
     <div className="mt-24">
       <div className="flex justify-around">
-        <form onSubmit={handleonSubmit} method="post" className="w-96">
+        <form onSubmit={handleLogin} method="post" className="w-96">
           <div className="text-white text-4xl mb-2 text-center">
             <span className="material-icons" style={{ fontSize: "6rem" }}>
               account_circle
@@ -53,8 +46,8 @@ const Userlogin = () => {
             <input
               className="p-3 rounded-lg"
               type="text"
-              value={credentials.username}
-              onChange={onchange}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               name="username"
               id="username"
               placeholder="Username"
@@ -64,8 +57,8 @@ const Userlogin = () => {
               className="p-3 rounded-lg"
               type="email"
               name="email"
-              value={credentials.email}
-              onChange={onchange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               id="email"
               placeholder="Enter Your Email"
             />
@@ -76,8 +69,8 @@ const Userlogin = () => {
               className="p-3 rounded-lg"
               type="password"
               name="password"
-              value={credentials.password}
-              onChange={onchange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               id="password"
               placeholder="Password"
             />
