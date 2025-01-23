@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "material-icons/iconfont/material-icons.css";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useDispatch} from 'react-redux';
+import { registerUser } from "../../Redux/Features/Auth/auth";
 
 const Userregister = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({
     fullName: "",
     username: "",
@@ -32,25 +34,22 @@ const Userregister = () => {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append("fullName", credentials.fullName);
-      formData.append("username", credentials.username);
-      formData.append("email", credentials.email);
-      formData.append("password", credentials.password);
-      formData.append("avatar", profilePic); // Ensure field name is 'avatar'
-      formData.append("coverImage", coverImage); // Ensure field name is 'coverImage'
+    const formData = new FormData();
+    formData.append("fullName", credentials.fullName);
+    formData.append("username", credentials.username);
+    formData.append("email", credentials.email);
+    formData.append("password", credentials.password);
+    formData.append("avatar", profilePic);
+    formData.append("coverImage", coverImage);
 
-      const register = await axios.post("http://localhost:7500/api/v1/users/register", formData);
-
-      if (register.data.success) {
+    dispatch(registerUser(formData))
+      .unwrap()
+      .then(() => {
         navigate("/login");
-      } else {
-        alert("Registration failed");
-      }
-    } catch (error) {
-      alert("Something went wrong");
-    }
+      })
+      .catch((err) => {
+        console.error('Failed to register:', err);
+      });
   };
 
   return (
